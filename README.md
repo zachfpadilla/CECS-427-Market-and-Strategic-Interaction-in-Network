@@ -1,73 +1,139 @@
-# CECS 427: Game Theory
+# CECS 427: Market and Strategic Interaction in Network
 
 #### Martin Silva (#030854159), Zachary Padilla (#033497475)
 
 ## Dependencies
 Required Libraries:
 - networkx
-- pandas
 - matplotlib
-- scipy
 
 In order to run this project via git:
 
 ```
-~/: git clone https://github.com/zachfpadilla/CECS-427-Game-Theory
-~/: cd CECS-427-Game-Theory/
+~/: git clone https://github.com/zachfpadilla/CECS-427-Market-and-Strategic-Interaction-in-Network
+~/: cd CECS-427-Market-and-Strategic-Interaction-in-Network/
 
 ### Optionally ###
-~/CECS-427-Game-Theory/: python3 -m venv .venv
-~/CECS-427-Game-Theory/: source .venv/bin/activate
-(.venv) ~/CECS-427-Game-Theory/: pip install networkx, pandas, matplotlib, scipy
+~/CECS-427-Market-and-Strategic-Interaction-in-Network/: python3 -m venv .venv
+~/CECS-427-Market-and-Strategic-Interaction-in-Network/: source .venv/bin/activate
+(.venv) ~/CECS-427-Market-and-Strategic-Interaction-in-Network/: pip install networkx, matplotlib
 ```
 
 ```
-~/CECS-427-Game-Theory/: python3 ./traffic_analysis.py -h
+~/CECS-427-Market-and-Strategic-Interaction-in-Network/: python3 ./market_strategy.py -h
 
-usage: traffic_analysis.py [-h] digraph_file n initial final [--plot]
+usage: market_strategy.py [-h] [--plot] [--interactive]
 
-Python application that handles Girvan-Newman graph partitioning, edge removal, homophily/balance verification, and visualization.
-
-positional arguments:
-  digraph_file            Path to the input graph file in .gml format
-  n                       An integer representing the number of vehicles
-  initial                 An integer representing the initial node
-  final                   An integer representing the final node
+Python application that performs the market-clearing algorithm with visualizations, as well as optional round graph display.
 
 options:
   --plot                  Plots the output of the command
+  --interactive           Plots the output of every round graph (e.g. includes contricted set calculation)
 ```
 
 ## Usage Instructions
 * ``--plot`` outputs an image of the plot to a new window.
+* ``--interactive`` outputs an image of the round graphs to a new window.
 
 ## Description of Implementation
 - All instructions were followed as listed—interpretations were made where needed.
 
 ## Examples of Commands and Outputs
-``python ./traffic_analysis.py traffic.gml 4 0 3 --plot``
+``python ./market_strategy.py market_constricted.gml --plot``
 ```
-Successfully loaded graph from 'traffic.gml'.
-Nodes: 4, Edges: 5
-Nash Equilibrium: {('0', '1'): 2.0087271010019605, ('0', '2'): 1.9912728989980364, ('1', '3'): 1.9730143070798423, ('1', '2'): 0.03571279392212056, ('2', '3'): 2.0269856929201575}
-Social Optimum: {('0', '1'): 2.002869162237398, ('0', '2'): 1.9971308377626016, ('1', '3'): 1.9790189950138668, ('1', '2'): 0.023850167223531584, ('2', '3'): 2.0209810049861328}
+Successfully loaded graph from 'market_constricted.gml'.
+Nodes: 6, Edges: 9
 
---- Nash Equilibrium (User Optimum) ---
-Edge (0 -> 1): 2.0087 vehicles
-Edge (0 -> 2): 1.9913 vehicles
-Edge (1 -> 3): 1.9730 vehicles
-Edge (1 -> 2): 0.0357 vehicles
-Edge (2 -> 3): 2.0270 vehicles
+--- Initial State ---
+Seller Prices:
+  S3: 0
+  S2: 0
+  S1: 0
 
---- Social Optimum ---
-Edge (0 -> 1): 2.0029 vehicles
-Edge (0 -> 2): 1.9971 vehicles
-Edge (1 -> 3): 1.9790 vehicles
-Edge (1 -> 2): 0.0239 vehicles
-Edge (2 -> 3): 2.0210 vehicles
+Market cleared; a perfect matching is possible at current prices.
+Final Matching (Buyer: Seller):
+  B1 -> S1
+  B3 -> S2
+  B2 -> S3
+  S3 -> B2
+  S2 -> B3
+  S1 -> B1
 
 Generating plot...
-
-Displaying plot... Close the plot window to exit.
+Generating plot...
 ```
-<img width="1800" height="833" alt="Screenshot_3" src="https://github.com/user-attachments/assets/ecc2e6ae-9ac1-4ba6-bbaf-fd8c89ddc336" />
+
+<img width="1200" height="759" alt="Screenshot_3" src="https://github.com/user-attachments/assets/e0dd4595-8961-4fc0-b083-0ac22bea0c1c" />
+
+``python ./market_strategy.py market.gml --plot --interactive``
+```
+Successfully loaded graph from 'market_constricted.gml'.
+Nodes: 6, Edges: 9
+
+--- Initial State ---
+Seller Prices:
+  S1: 0
+  S3: 0
+  S2: 0
+
+----- Round 1 -----
+Found constricted set of buyers: {'B1', 'B2'}
+Their preferred neighborhood of sellers: {'S1'}
+Increasing prices for sellers in the neighborhood...
+New Seller Prices:
+  S1: 1
+  S3: 0
+  S2: 0
+
+----- Round 2 -----
+Found constricted set of buyers: {'B1', 'B2', 'B3'}
+Their preferred neighborhood of sellers: {'S1', 'S2'}
+Increasing prices for sellers in the neighborhood...
+New Seller Prices:
+  S1: 2
+  S3: 0
+  S2: 1
+
+----- Round 3 -----
+Found constricted set of buyers: {'B1', 'B2', 'B3'}
+Their preferred neighborhood of sellers: {'S1', 'S2'}
+Increasing prices for sellers in the neighborhood...
+New Seller Prices:
+  S1: 3
+  S3: 0
+  S2: 2
+
+----- Round 4 -----
+Found constricted set of buyers: {'B1', 'B2', 'B3'}
+Their preferred neighborhood of sellers: {'S1', 'S2'}
+Increasing prices for sellers in the neighborhood...
+New Seller Prices:
+  S1: 4
+  S3: 0
+  S2: 3
+
+----- Round 5 -----
+Found constricted set of buyers: {'B1', 'B2', 'B3'}
+Their preferred neighborhood of sellers: {'S1', 'S2'}
+Increasing prices for sellers in the neighborhood...
+New Seller Prices:
+  S1: 5
+  S3: 0
+  S2: 4
+
+----- Round 6 -----
+
+Market cleared; a perfect matching is possible at current prices.
+Final Matching (Buyer: Seller):
+  B1 -> S1
+  B2 -> S3
+  B3 -> S2
+  S1 -> B1
+  S3 -> B2
+  S2 -> B3
+
+Generating plot...
+Generating plot...
+```
+
+<img width="1199" height="958" alt="Screenshot_10" src="https://github.com/user-attachments/assets/88624071-ee93-4a96-ba67-090aeab5c4ea" />
